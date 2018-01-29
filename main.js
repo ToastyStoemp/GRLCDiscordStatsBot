@@ -58,6 +58,9 @@ bot.on('message', msg => {
                             case "tiprandomadress":
                                 msg.reply("Shows the a random adress from someone currently mining in the pool, perfect if you want to surprise a fellow miner!");
                                 break;
+                            case "stats":
+                                msg.reply("Shows the some interesting stats about this pool!");
+                                break;
                         }
                     }
                     break;
