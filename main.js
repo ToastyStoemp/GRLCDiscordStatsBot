@@ -68,7 +68,15 @@ bot.on('message', msg => {
                     msg.reply("soon");
                     break;
                 case "tiprandomadress":
-                    msg.reply("soon");
+                    request({ url: "http://209.250.230.130/api/stats", json: true }, function(error, response, body) {
+                        if (error) console.log(error);
+                        else {
+                            var garlicoinPool = body.pools.garlicoin
+                            var obj_keys = Object.keys(garlicoinPool.workers);
+                            var ran_key = obj_keys[Math.floor(Math.random() * garlicoinPool.workerCount)];
+                            msg.reply("Here is a random adress from the list of current workers: " + ran_key);
+                        }
+                    });
                     break;
                 case "stats":
                     msg.reply("Highest HashRate: " + config.stats.highestHashRate + "\nHighest Worker Count: " + config.stats.highestWorkercount + "\nWill show more stats soon.");
