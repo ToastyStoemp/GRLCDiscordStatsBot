@@ -155,6 +155,11 @@ bot.on('message', msg => {
                                     "inline": true
                                 },
                                 {
+                                    "name": "Highest Individual Hashrate:",
+                                    "value": `${config.stats.highestIndividualHashRateString}`,
+                                    "inline": true
+                                },
+                                {
                                     "name": "Fastest Block Sovle:",
                                     "value": `${config.stats.fastestBlocktimeString}`,
                                     "inline": true
@@ -207,6 +212,17 @@ var SetCurrentRate = function() {
             if (garlicoinPool.hashrate > config.stats.highestHashRate) {
                 config.stats.highestHashRate = garlicoinPool.hashrate;
                 needsSave = true;
+            }
+
+            for (var key in garlicoinPool.workers) {
+                if (garlicoinPool.workers.hasOwnProperty(key)) {
+                    var worker = garlicoinPool.workers[key];
+                    if (worker.hashrate > config.stats.highestIndividualHashRate) {
+                        config.stats.highestIndividualHashRate = worker.hashrate;
+                        config.stats.highestIndividualHashRateString = worker.hashrateString;
+                        needsSave = true;
+                    }
+                }
             }
 
             var blockData = garlicoinPool.blocks;

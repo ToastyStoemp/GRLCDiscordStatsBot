@@ -1,19 +1,20 @@
 {
-    "BotToken": "NDA3NjAyMjc2MDQ0MTExODc0.DVD4ug.64oDLDMORZXq-6LJ2PQdMa0NkrA",
-    "options": {
-        "poolName": "The Salt Mine",
-        "poolAPIStats": "http://209.250.230.130/api/stats",
-        "poolTipAdress": "GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj"
-    },
-    "block": {
-        "total": 3,
-        "last": 1517269462326
-    },
-    "stats": {
-        "fastestBlocktime": 1111111111111,
-        "fastestBlocktimeString": "Not yet available",
-        "highestHashRate": 6255976.39495297,
-        "highestWorkercount": 34,
-        "highestIndividualHashRate": 0
-    }
+  "BotToken": "NDA3NjAyMjc2MDQ0MTExODc0.DVD4ug.64oDLDMORZXq-6LJ2PQdMa0NkrA",
+  "options": {
+    "poolName": "The Salt Mine",
+    "poolAPIStats": "http://209.250.230.130/api/stats",
+    "poolTipAdress": "GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj"
+  },
+  "block": {
+    "total": 3,
+    "last": 1517269462326
+  },
+  "stats": {
+    "fastestBlocktime": 1111111111111,
+    "fastestBlocktimeString": "Not yet available",
+    "highestHashRate": 6255976.39495297,
+    "highestWorkercount": 34,
+    "highestIndividualHashRate": 945793.2148801533,
+    "highestIndividualHashRateString": "945.79 KH"
+  }
 }
