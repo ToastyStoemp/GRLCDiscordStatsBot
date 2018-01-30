@@ -6,6 +6,8 @@ const Discord = require("discord.js");
 const bot = new Discord.Client();
 
 var moderators = config.moderators;
+var lastKnownPoolHashRate;
+var lastKnownPoolHashRateString;
 
 bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
@@ -68,7 +70,20 @@ bot.on('message', msg => {
                     msg.reply("Feel free to tip **The Salt Mine** at: GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj\nOr throw some GRLC at the developer of this bot: GQFMXJCcnremXu8RAi89Hu8ivUUdd6EtVL");
                     break;
                 case "etanextblock":
-                    msg.reply("soon");
+                    request({ url: "https://explorer.grlc-bakery.fun/api/getnetworkhashps", json: true }, function(error, response, body) {
+                        if (error) console.log(error);
+                        else {
+                            var NetworkHashRate = body;
+                            var PoolHashRate = lastKnownPoolHashRate;
+                            var estimatedPoolGain = 24 * 60 * (60 / 40) * 50 * (PoolHashRate / NetworkHashRate);
+
+                            var dayChance = (estimatedPoolGain / 50) * 100;
+
+                            var timePercentage = (Date.now() - config.block.last) / (24 * 60 * 60 * 1000);
+                            var currentChance = timePercentage * dayChance;
+                            msg.reply(`With the current hashrate (${lastKnownPoolHashRateString}/s) compared to the global network hashrate (${Math.round(NetworkHashRate / 1000 / 1000 / 1000 * 100) / 100}GH/s) this pool has an ${Math.round(currentChance * 100) / 100}% chance to solve the current block first.\nTo learn more about the math behind this calculation use !help etaNextBlock`);
+                        }
+                    });
                     break;
                 case "tiprandomadress":
                     request({ url: "http://209.250.230.130/api/stats", json: true }, function(error, response, body) {
@@ -110,8 +125,10 @@ var SetCurrentRate = function() {
         else {
             var needsSave = false;
 
-            var garlicoinPool = body.pools.garlicoin
-            console.log(garlicoinPool.hashrateString);
+            var garlicoinPool = body.pools.garlicoin;
+            lastKnownPoolHashRate = garlicoinPool.hashrate;
+            lastKnownPoolHashRateString = garlicoinPool.hashrateString;
+
             bot.user.setPresence({ game: { name: garlicoinPool.hashrateString + " ~ " + garlicoinPool.workerCount, type: 0 } });
 
             if (garlicoinPool.workerCount > config.stats.highestWorkercount) {
