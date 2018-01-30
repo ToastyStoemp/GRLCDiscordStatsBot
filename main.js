@@ -5,7 +5,6 @@ var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 const Discord = require("discord.js");
 const bot = new Discord.Client();
 
-var moderators = config.moderators;
 var lastKnownPoolHashRate;
 var lastKnownPoolHashRateString;
 
@@ -44,7 +43,7 @@ bot.on('message', msg => {
                 case "help":
                     msg.channel.send({
                         "embed": {
-                            "description": "Bot made for **The Salt Mine** by *ToastyStoemp* & *Rut*\nList of commands:",
+                            "description": `Bot made for **${config.options.poolName}** by *ToastyStoemp* & *Rut*\nList of commands:`,
                             "color": 16777215,
                             "fields": [{
                                     "name": "!help",
@@ -78,8 +77,8 @@ bot.on('message', msg => {
                             "description": "Want to show your appreciation for all this salty goodness?",
                             "color": 16777215,
                             "fields": [{
-                                    "name": "Pool Backbone ( Help keep us running! )",
-                                    "value": "GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj"
+                                    "name": `Pool Backbone ( Help keep ${config.options.poolName} running! )`,
+                                    "value": `${config.options.poolTipAdress}`
                                 },
                                 {
                                     "name": "ToastyStoemp ( Bot Developer #1 )",
@@ -110,7 +109,7 @@ bot.on('message', msg => {
                     });
                     break;
                 case "tiprandomaddress":
-                    request({ url: "http://209.250.230.130/api/stats", json: true }, function(error, response, body) {
+                    request({ url: config.options.poolAPIStats, json: true }, function(error, response, body) {
                         if (error) console.log(error);
                         else {
                             var garlicoinPool = body.pools.garlicoin
@@ -189,7 +188,7 @@ bot.on('guildMemberAdd', member => {
 bot.login(config.BotToken);
 
 var SetCurrentRate = function() {
-    request({ url: "http://209.250.230.130/api/stats", json: true }, function(error, response, body) {
+    request({ url: config.options.poolAPIStats, json: true }, function(error, response, body) {
         if (error) console.log(error);
         else {
             var needsSave = false;

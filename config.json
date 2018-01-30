@@ -1,8 +1,10 @@
 {
     "BotToken": "NDA3NjAyMjc2MDQ0MTExODc0.DVD4ug.64oDLDMORZXq-6LJ2PQdMa0NkrA",
-    "moderators": [
-        "101825856640385024"
-    ],
+    "options": {
+        "poolName": "The Salt Mine",
+        "poolAPIStats": "http://209.250.230.130/api/stats",
+        "poolTipAdress": "GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj"
+    },
     "block": {
         "total": 3,
         "last": 1517269462326
