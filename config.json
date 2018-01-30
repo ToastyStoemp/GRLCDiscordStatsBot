@@ -2,24 +2,24 @@
     "BotToken": "",
     "options": {
         "poolName": "The Salt Mine",
-        "poolAPIStats": "http://209.250.230.130/api/stats",
-        "poolTipAdress": "GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj"
+        "poolAPIStats": "http://domain.com/api/stats",
+        "poolTipAdress": "pool donation GRLC adress"
     },
     "block": {
-        "total": 3,
-        "last": 1517269462326
+        "total": 0,
+        "last": 0
     },
     "stats": {
         "fastestBlocktime": 1111111111111,
         "fastestBlocktimeString": "Not yet available",
 
-        "highestHashRate": 6255976.39495297,
-        "highestHashRateString": "6.25 MH",
+        "highestHashRate": 0,
+        "highestHashRateString": "",
 
-        "highestWorkercount": 34,
+        "highestWorkercount": 0,
 
-        "highestIndividualHashRate": 1111096.7366123516,
-        "highestIndividualHashRateString": "1.11 MH",
+        "highestIndividualHashRate": 0,
+        "highestIndividualHashRateString": "",
         "highestIndividualAdress": ""
     }
 }
