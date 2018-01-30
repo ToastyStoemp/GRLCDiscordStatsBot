@@ -45,60 +45,54 @@ bot.on('message', msg => {
             switch (cmd) {
                 case "help":
                     msg.channel.send({
-                      "embed": {
-                        "description": "Bot made for **The Salt Mine** by *ToastyStoemp* & *Rut*\nList of commands:",
-                        "color": 16777215,
-                        "fields": [
-                          {
-                            "name": "!help",
-                            "value": "Shows this help message.",
-                            "inline": true
-                          },
-                          {
-                            "name": "!stats",
-                            "value": "Shows interesting stats about this pool!",
-                            "inline": true
-                          },
-                          {
-                            "name": "!tip",
-                            "value": "Shows the address of the server and bot devs, feel free to send us something :smile:"
-                          },
-                          {
-                            "name": "!etaNextBlock",
-                            "value": "Calculates an __estimated__ time until the next block will be mined. This is an estimate!"
-                          },
-                          {
-                            "name": "!tipRandomaddress",
-                            "value": "Shows a random address from someone currently mining in the pool- perfect if you want to surprise a fellow miner!"
-                          }
-                        ]
-                      }
+                        "embed": {
+                            "description": "Bot made for **The Salt Mine** by *ToastyStoemp* & *Rut*\nList of commands:",
+                            "color": 16777215,
+                            "fields": [{
+                                    "name": "!help",
+                                    "value": "Shows this help message.",
+                                    "inline": true
+                                },
+                                {
+                                    "name": "!stats",
+                                    "value": "Shows interesting stats about this pool!",
+                                    "inline": true
+                                },
+                                {
+                                    "name": "!tip",
+                                    "value": "Shows the address of the server and bot devs, feel free to send us something :smile:"
+                                },
+                                {
+                                    "name": "!etaNextBlock",
+                                    "value": "Calculates an __estimated__ time until the next block will be mined. This is an estimate!"
+                                },
+                                {
+                                    "name": "!tipRandomaddress",
+                                    "value": "Shows a random address from someone currently mining in the pool- perfect if you want to surprise a fellow miner!"
+                                }
+                            ]
+                        }
                     });
                     break;
                 case "tip":
                     msg.channel.send({
-                      "embed": {
-                        "description": "Want to show your appreciation for all this salty goodness?",
-                        "color": 16777215,
-                        "fields": [
-                          {
-                            "name": "Pool Backbone ( Help keep us running! )",
-                            "value": "GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj"
-                          },
-                          {
-                            "name": "Spinax ( Our Server Stylist )",
-                            "value": "( Psst, we need your wallet address! )"
-                          },
-                          {
-                            "name": "ToastyStoemp ( Bot Developer #1 )",
-                            "value": "GQFMXJCcnremXu8RAi89Hu8ivUUdd6EtVL"
-                          },
-                          {
-                            "name": "Rut ( Bot Developer #2 )",
-                            "value": "GKxBoZ49srGXuGabXHdLEvRoq1uPQTX9wC"
-                          }
-                        ]
-                      }
+                        "embed": {
+                            "description": "Want to show your appreciation for all this salty goodness?",
+                            "color": 16777215,
+                            "fields": [{
+                                    "name": "Pool Backbone ( Help keep us running! )",
+                                    "value": "GWQC7SmUvvmkEbsNVrhBgm4hNMXxPUf3Sj"
+                                },
+                                {
+                                    "name": "ToastyStoemp ( Bot Developer #1 )",
+                                    "value": "GQFMXJCcnremXu8RAi89Hu8ivUUdd6EtVL"
+                                },
+                                {
+                                    "name": "Rut ( Bot Developer #2 )",
+                                    "value": "GKxBoZ49srGXuGabXHdLEvRoq1uPQTX9wC"
+                                }
+                            ]
+                        }
                     });
                     break;
                 case "etanextblock":
@@ -125,52 +119,50 @@ bot.on('message', msg => {
                             var obj_keys = Object.keys(garlicoinPool.workers);
                             var ran_key = obj_keys[Math.floor(Math.random() * garlicoinPool.workerCount)];
                             msg.channel.send({
-                              "embed": {
-                                "description": "This guy is chipping away hard at that salt, lookin' for dat tasty bread! He could use a toasty warm tip :wink:",
-                                "color": 16777215,
-                                "fields": [
-                                  {
-                                    "name": "Address:",
-                                    "value": `${ran_key}`
-                                  },
-                                  {
-                                    "name": "Hash Rate:",
-                                    "value": `${garlicoinPool.workers[ran_key].hashrateString}`,
-                                    "inline": true
-                                  },
-                                  {
-                                    "name": "Shares:",
-                                    "value": `${garlicoinPool.workers[ran_key].shares}`,
-                                    "inline": true
-                                  }
-                                ]
-                              }
+                                "embed": {
+                                    "description": "This guy is chipping away hard at that salt, lookin' for dat tasty bread! He could use a toasty warm tip :wink:",
+                                    "color": 16777215,
+                                    "fields": [{
+                                            "name": "Address:",
+                                            "value": `${ran_key}`
+                                        },
+                                        {
+                                            "name": "Hash Rate:",
+                                            "value": `${garlicoinPool.workers[ran_key].hashrateString}`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Shares:",
+                                            "value": `${garlicoinPool.workers[ran_key].shares}`,
+                                            "inline": true
+                                        }
+                                    ]
+                                }
                             });
                         }
                     });
                     break;
                 case "stats":
                     msg.channel.send({
-                      "embed": {
-                        "description": "Zero bamboozle garlic salt stats!",
-                        "color": 16777215,
-                        "fields": [
-                          {
-                            "name": "Highest Pool Hashrate:",
-                            "value": `${config.stats.highestHashRate}`,
-                            "inline": true
-                          },
-                          {
-                            "name": "Highest Pool Workers:",
-                            "value": `${config.stats.highestWorkercount}`,
-                            "inline": true
-                          },
-                          {
-                            "name": "Want moar stats?",
-                            "value": "Send us some suggestions on what you'd like to see!"
-                          }
-                        ]
-                      }
+                        "embed": {
+                            "description": "Zero bamboozle garlic salt stats!",
+                            "color": 16777215,
+                            "fields": [{
+                                    "name": "Highest Pool Hashrate:",
+                                    "value": `${config.stats.highestHashRate}`,
+                                    "inline": true
+                                },
+                                {
+                                    "name": "Highest Pool Workers:",
+                                    "value": `${config.stats.highestWorkercount}`,
+                                    "inline": true
+                                },
+                                {
+                                    "name": "Want moar stats?",
+                                    "value": "Send us some suggestions on what you'd like to see!"
+                                }
+                            ]
+                        }
                     });
                     break;
             }
