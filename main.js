@@ -15,7 +15,7 @@ bot.on('ready', () => {
     setInterval(SetCurrentRate, 60 * 1000);
     SetCurrentRate();
 
-    setInterval(UpdateData, 60 * 60 * 1000);
+    setInterval(UpdateData, 60 * 1000);
     UpdateData();
 });
 
@@ -214,33 +214,36 @@ bot.on('message', msg => {
                             if (error)
                                 if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
                                 else {
+                                    var targetTime = lastKnownData[Math.floor(Date.now() / 1000 / 60) - 60];
+                                    if (targetTime == undefined)
+                                        targetTime = lastKnownData[Object.keys(lastKnownData)[0]];
                                     msg.channel.send({
                                         "embed": {
                                             "description": `Zero bamboozle ${config.options.poolName} stats!`,
                                             "color": 16777215,
                                             "fields": [{
                                                     "name": "Current USD price:",
-                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(lastKnownData.UsdPrice, body.data[0].lastUsdPrice)})`,
+                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(targetTime.UsdPrice, body.data[0].lastUsdPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current BTC price:",
-                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(lastKnownData.lastPrice, body.data[0].lastPrice)})`,
+                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(targetTime.lastPrice, body.data[0].lastPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current difficulty:",
-                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(lastKnownData.difficulty, body.data[0].difficulty)})`,
+                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(targetTime.difficulty, body.data[0].difficulty)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Block Count:",
-                                                    "value": `${body.data[0].blockcount} (${StringDifference(lastKnownData.blockCount,body.data[0].blockcount)})`,
+                                                    "value": `${body.data[0].blockcount} (${StringDifference(targetTime.blockCount,body.data[0].blockcount)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Network Rate:",
-                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(lastKnownData.networkRate,body.data[0].hashrate)})`,
+                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(targetTime.networkRate,body.data[0].hashrate)})`,
                                                     "inline": true
                                                 },
                                                 {
@@ -263,6 +266,9 @@ bot.on('message', msg => {
                             if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
                             else {
                                 try {
+                                    var targetTime = lastKnownData[Math.floor(Date.now() / 1000 / 60) - 60];
+                                    if (targetTime == undefined)
+                                        targetTime = lastKnownData[Object.keys(lastKnownData)[0]];
                                     msg.channel.send({
                                         "embed": {
                                             "description": `Zero bamboozle ${config.options.poolName} stats!`,
@@ -288,27 +294,27 @@ bot.on('message', msg => {
                                                     "inline": true
                                                 }, {
                                                     "name": "Current USD price:",
-                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(lastKnownData.UsdPrice, body.data[0].lastUsdPrice)})`,
+                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(targetTime.UsdPrice, body.data[0].lastUsdPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current BTC price:",
-                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(lastKnownData.lastPrice, body.data[0].lastPrice)})`,
+                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(targetTime.lastPrice, body.data[0].lastPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current difficulty:",
-                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(lastKnownData.difficulty, body.data[0].difficulty)})`,
+                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(targetTime.difficulty, body.data[0].difficulty)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Block Count:",
-                                                    "value": `${body.data[0].blockcount} (${StringDifference(lastKnownData.blockCount,body.data[0].blockcount)})`,
+                                                    "value": `${body.data[0].blockcount} (${StringDifference(targetTime.blockCount,body.data[0].blockcount)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Network Rate:",
-                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(lastKnownData.networkRate,body.data[0].hashrate)})`,
+                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(targetTime.networkRate,body.data[0].hashrate)})`,
                                                     "inline": true
                                                 },
                                                 {
@@ -441,11 +447,26 @@ var UpdateData = function() {
     request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
         if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
         else {
-            lastKnownData.UsdPrice = body.data[0].lastUsdPrice;
-            lastKnownData.lastPrice = body.data[0].lastPrice;
-            lastKnownData.difficulty = body.data[0].difficulty;
-            lastKnownData.blockCount = body.data[0].blockcount;
-            lastKnownData.networkRate = body.data[0].hashrate;
+            var data = {
+                "UsdPrice": body.data[0].lastUsdPrice,
+                "lastPrice": body.data[0].lastPrice,
+                "difficulty": body.data[0].difficulty,
+                "blockCount": body.data[0].blockcount,
+                "networkRate": body.data[0].hashrate
+            }
+
+            lastKnownData[Math.floor(Date.now() / 1000 / 60)] = data;
+
+            var keys = Object.keys(lastKnownData);
+            if (keys.length > 60) {
+                var smallestKey = Date.now();
+                for (var key in keys) {
+                    var currkey = keys[key];
+                    if (currkey < smallestKey)
+                        smallestKey = currkey;
+                }
+                delete lastKnownData[smallestKey];
+            }
         }
     });
 }
