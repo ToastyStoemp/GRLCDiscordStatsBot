@@ -4,13 +4,13 @@
     "101825856640385024"
   ],
   "block": {
-    "total": 2,
-    "last": 1517261148767
+    "total": 3,
+    "last": 1517269462326
   },
   "stats": {
     "fastestBlocktime": 0,
     "highestHashRate": 6255976.39495297,
-    "highestWorkercount": 33,
+    "highestWorkercount": 34,
     "highestIndividualHashRate": 0
   }
 }
