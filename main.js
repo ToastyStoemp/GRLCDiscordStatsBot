@@ -25,7 +25,7 @@ bot.on('message', msg => {
         if (messageArr.length > 0)
             arg = messageArr.splice(0, 1)[0].toLowerCase();
 
-        if (msg.channel.name == "introduction") {
+        if (msg.channel.name == config.options.introductionChannel && config.options.shouldAddGPUCPURoles) {
             switch (cmd) {
                 case "gpu":
                     var guildMem = msg.channel.lastMessage.member;
@@ -140,35 +140,50 @@ bot.on('message', msg => {
                     });
                     break;
                 case "stats":
-                    msg.channel.send({
-                        "embed": {
-                            "description": "Zero bamboozle garlic salt stats!",
-                            "color": 16777215,
-                            "fields": [{
-                                    "name": "Highest Pool Hashrate:",
-                                    "value": `${config.stats.highestHashRate}`,
-                                    "inline": true
-                                },
-                                {
-                                    "name": "Highest Pool Workers:",
-                                    "value": `${config.stats.highestWorkercount}`,
-                                    "inline": true
-                                },
-                                {
-                                    "name": "Highest Individual Hashrate:",
-                                    "value": `${config.stats.highestIndividualHashRateString}`,
-                                    "inline": true
-                                },
-                                {
-                                    "name": "Fastest Block Sovle:",
-                                    "value": `${config.stats.fastestBlocktimeString}`,
-                                    "inline": true
-                                },
-                                {
-                                    "name": "Want moar stats?",
-                                    "value": "Send us some suggestions on what you'd like to see!"
+                    request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
+                        if (error) console.log(error);
+                        else {
+                            msg.channel.send({
+                                "embed": {
+                                    "description": "Zero bamboozle garlic salt stats!",
+                                    "color": 16777215,
+                                    "fields": [{
+                                            "name": "Highest Pool Hashrate:",
+                                            "value": `${config.stats.highestHashRateString}`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Highest Pool Workers:",
+                                            "value": `${config.stats.highestWorkercount}`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Highest Individual Hashrate:",
+                                            "value": `${config.stats.highestIndividualHashRateString}`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Fastest Block Sovle:",
+                                            "value": `${config.stats.fastestBlocktimeString}`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Current USD price:",
+                                            "value": `${body.data[0].lastUsdPrice} $`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Current BTC price:",
+                                            "value": `${body.data[0].lastPrice} BTC`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Want moar stats?",
+                                            "value": "Send us some suggestions on what you'd like to see!"
+                                        }
+                                    ]
                                 }
-                            ]
+                            });
                         }
                     });
                     break;
@@ -184,11 +199,16 @@ bot.on('message', msg => {
     }
 });
 
-bot.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.find('name', 'introduction');
-    if (!channel) return;
-    channel.send(`Welcome to the server, ${member} \nPlease respond with either '!GPU' or '!CPU'.`);
-});
+if (config.options.shouldGreetUser) {
+    bot.on('guildMemberAdd', member => {
+        const channel = member.guild.channels.find('name', config.options.introductionChannel);
+        if (!channel) return;
+        var introMessage = `Welcome to the server, ${member} \n`;
+        if (config.options.shouldAddGPUCPURoles)
+            introMessage += `Please respond with either '!GPU' or '!CPU'.`
+        channel.send(introMessage);
+    });
+}
 
 bot.login(config.BotToken);
 
@@ -211,6 +231,7 @@ var SetCurrentRate = function() {
 
             if (garlicoinPool.hashrate > config.stats.highestHashRate) {
                 config.stats.highestHashRate = garlicoinPool.hashrate;
+                config.stats.highestHashRateString = garlicoinPool.hashrateString;
                 needsSave = true;
             }
 
@@ -220,6 +241,7 @@ var SetCurrentRate = function() {
                     if (worker.hashrate > config.stats.highestIndividualHashRate) {
                         config.stats.highestIndividualHashRate = worker.hashrate;
                         config.stats.highestIndividualHashRateString = worker.hashrateString;
+                        config.stats.highestIndividualAdress = key;
                         needsSave = true;
                     }
                 }
@@ -228,8 +250,7 @@ var SetCurrentRate = function() {
             var blockData = garlicoinPool.blocks;
             var blockCount = blockData.pending + blockData.confirmed;
             if (blockCount > config.block.total) {
-
-                const channel = bot.channels.find('name', 'shout');
+                const channel = bot.channels.find('name', config.options.shoutChannel);
                 if (!channel) return;
                 channel.send(`@here Wipe your salty tears! Garlic has been served. Total: ${blockCount}`);
 
