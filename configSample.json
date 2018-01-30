@@ -23,7 +23,6 @@
         "highestWorkercount": 0,
 
         "highestIndividualHashRate": 0,
-        "highestIndividualHashRateString": "",
-        "highestIndividualAdress": ""
+        "highestIndividualWorker": {}
     }
 }

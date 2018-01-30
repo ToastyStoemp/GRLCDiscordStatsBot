@@ -350,7 +350,9 @@ var SetCurrentRate = function() {
             for (var key in garlicoinPool.workers) {
                 if (garlicoinPool.workers.hasOwnProperty(key)) {
                     var worker = garlicoinPool.workers[key];
-                    var hashRate = parseFloat(worker.hashrateString.slice(0, -3));
+                    var hashRate = parseFloat(worker.hashrateString.slice(0, -2));
+                    if (worker.hashrateString.indexOf("M") != -1)
+                        hashRate *= 1000;
                     if (hashRate > config.stats.highestIndividualHashRate) {
                         config.stats.highestIndividualHashRate = hashRate;
                         worker.adress = key;
@@ -364,7 +366,7 @@ var SetCurrentRate = function() {
             var blockCount = blockData.pending + blockData.confirmed;
             if (blockCount > config.block.total) {
                 try {
-                    console.log("Found a block " + Date.now());
+                    console.log("Found a block " + new Date(Date.now()));
                     const channel = bot.channels.find('name', config.options.shoutChannel);
                     if (!channel) return;
                     //channel.send(`@here Wipe your salty tears! Garlic has been served. Total: ${blockCount}`);
