@@ -37,8 +37,6 @@ bot.on('message', msg => {
                     var guildMem = msg.channel.lastMessage.member;
                     var role = msg.guild.roles.find("name", "CPU");
                     guildMem.addRole(role).catch(console.error);
-
-                    msg.delete(10000);
                     break;
             }
         } else {
