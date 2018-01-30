@@ -51,17 +51,27 @@ bot.on('message', msg => {
                                     "inline": true
                                 },
                                 {
+                                    "name": "!tip",
+                                    "value": "Shows the address of the server and bot devs, feel free to send us something :smile:",
+                                    "inline": true
+                                },
+                                {
                                     "name": "!stats",
+                                    "value": "Shows all interesting statistics!"
+                                },
+                                {
+                                    "name": "!poolStats",
                                     "value": "Shows interesting stats about this pool!",
                                     "inline": true
                                 },
                                 {
-                                    "name": "!tip",
-                                    "value": "Shows the address of the server and bot devs, feel free to send us something :smile:"
+                                    "name": "!grlcStats",
+                                    "value": "Shows interesting stats about Garlicoin!",
+                                    "inline": true
                                 },
                                 {
                                     "name": "!etaNextBlock",
-                                    "value": "Calculates an __estimated__ time until the next block will be mined. This is an estimate!"
+                                    "value": "Calculates an __estimated__ percentage of probability how close to mining the next block will be mined. This is an estimate!"
                                 },
                                 {
                                     "name": "!tipRandomaddress",
@@ -139,6 +149,73 @@ bot.on('message', msg => {
                         }
                     });
                     break;
+                case "poolstats":
+                    msg.channel.send({
+                        "embed": {
+                            "description": `Zero bamboozle ${config.options.poolName} stats!`,
+                            "color": 16777215,
+                            "fields": [{
+                                    "name": "Highest Pool Hashrate:",
+                                    "value": `${config.stats.highestHashRateString}`,
+                                    "inline": true
+                                },
+                                {
+                                    "name": "Highest Pool Workers:",
+                                    "value": `${config.stats.highestWorkercount}`,
+                                    "inline": true
+                                },
+                                {
+                                    "name": "Highest Individual Hashrate:",
+                                    "value": `${config.stats.highestIndividualHashRateString}`,
+                                    "inline": true
+                                },
+                                {
+                                    "name": "Fastest Block Solve:",
+                                    "value": `${config.stats.fastestBlocktimeString}`,
+                                    "inline": true
+                                },
+                                {
+                                    "name": "Want moar stats?",
+                                    "value": "Send us some suggestions on what you'd like to see!"
+                                }
+                            ]
+                        }
+                    });
+                    break;
+                case "grlcstats":
+                    request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
+                        if (error) console.log(error);
+                        else {
+                            msg.channel.send({
+                                "embed": {
+                                    "description": `Zero bamboozle ${config.options.poolName} stats!`,
+                                    "color": 16777215,
+                                    "fields": [{
+                                            "name": "Current USD price:",
+                                            "value": `${body.data[0].lastUsdPrice} $`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Current BTC price:",
+                                            "value": `${body.data[0].lastPrice} BTC`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Current difficulty:",
+                                            "value": `${body.data[0].difficulty}`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Want moar stats?",
+                                            "value": "Send us some suggestions on what you'd like to see!"
+                                        }
+                                    ]
+                                }
+                            });
+                        }
+                    });
+                    break;
+
                 case "stats":
                     request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
                         if (error) console.log(error);
@@ -166,8 +243,7 @@ bot.on('message', msg => {
                                             "name": "Fastest Block Solve:",
                                             "value": `${config.stats.fastestBlocktimeString}`,
                                             "inline": true
-                                        },
-                                        {
+                                        }, {
                                             "name": "Current USD price:",
                                             "value": `${body.data[0].lastUsdPrice} $`,
                                             "inline": true
@@ -175,6 +251,11 @@ bot.on('message', msg => {
                                         {
                                             "name": "Current BTC price:",
                                             "value": `${body.data[0].lastPrice} BTC`,
+                                            "inline": true
+                                        },
+                                        {
+                                            "name": "Current difficulty:",
+                                            "value": `${body.data[0].difficulty}`,
                                             "inline": true
                                         },
                                         {
