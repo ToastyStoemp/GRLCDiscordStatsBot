@@ -116,7 +116,7 @@ bot.on('message', msg => {
                                 var timePercentage = (Date.now() - config.block.last) / (24 * 60 * 60 * 1000);
                                 var currentChance = timePercentage * dayChance;
                                 try {
-                                    msg.reply(`with the current hashrate (${lastKnownPoolHashRateString}/s) compared to the global network hashrate of (${Math.round(NetworkHashRate / 1000 / 1000 / 1000 * 100) / 100}GH/s) this pool has advanced ${Math.round(currentChance * 100) / 100}% towards a potential next block solve.\n This pool has makes up for ${(PoolHashRate / NetworkHashRate * 100)}‱ in the network.\nTo learn more about the math behind this calculation use !help etaNextBlock`);
+                                    msg.reply(`with the current hashrate (${lastKnownPoolHashRateString}/s) compared to the global network hashrate of (${Math.round(NetworkHashRate / 1000 / 1000 / 1000 * 100) / 100}GH/s) this pool has advanced ${Math.round(currentChance * 100) / 100}% towards a potential next block solve.\nThis pool has en estimate income of ${estimatedPoolGain}\nThis pool has makes up for ${(PoolHashRate / NetworkHashRate * 100)}‱ in the network.\nTo learn more about the math behind this calculation use !help etaNextBlock`);
                                 } catch (error) {
                                     console.log("Failed to reply to message for: " + cmd + "\n" + error);
                                 }
@@ -126,12 +126,12 @@ bot.on('message', msg => {
                         console.log("Failed to get request data for: https://explorer.grlc-bakery.fun/api/getnetworkhashps\n" + error);
                     }
                     break;
+                case "tiprandom":
                 case "tiprandomaddress":
                     try {
                         request({ url: config.options.poolAPIStats, json: true }, function(error, response, body) {
                             if (error) console.log(error);
                             else {
-                                console.log(body);
                                 var garlicoinPool = body.pools.garlicoin
                                 var obj_keys = Object.keys(garlicoinPool.workers);
                                 var ran_key = obj_keys[Math.floor(Math.random() * garlicoinPool.workerCount)];
@@ -184,7 +184,7 @@ bot.on('message', msg => {
                                     },
                                     {
                                         "name": "Highest Individual Hashrate:",
-                                        "value": `${config.stats.highestIndividualHashRateString}`,
+                                        "value": `${config.stats.highestIndividualWorker.hashrateString}`,
                                         "inline": true
                                     },
                                     {
@@ -204,38 +204,42 @@ bot.on('message', msg => {
                     }
                     break;
                 case "grlcstats":
-                    request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
-                        if (error)
-                            if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
-                            else {
-                                msg.channel.send({
-                                    "embed": {
-                                        "description": `Zero bamboozle ${config.options.poolName} stats!`,
-                                        "color": 16777215,
-                                        "fields": [{
-                                                "name": "Current USD price:",
-                                                "value": `${body.data[0].lastUsdPrice} $`,
-                                                "inline": true
-                                            },
-                                            {
-                                                "name": "Current BTC price:",
-                                                "value": `${body.data[0].lastPrice} BTC`,
-                                                "inline": true
-                                            },
-                                            {
-                                                "name": "Current difficulty:",
-                                                "value": `${body.data[0].difficulty}`,
-                                                "inline": true
-                                            },
-                                            {
-                                                "name": "Want moar stats?",
-                                                "value": "Send us some suggestions on what you'd like to see!"
-                                            }
-                                        ]
-                                    }
-                                });
-                            }
-                    });
+                    try {
+                        request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
+                            if (error)
+                                if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
+                                else {
+                                    msg.channel.send({
+                                        "embed": {
+                                            "description": `Zero bamboozle ${config.options.poolName} stats!`,
+                                            "color": 16777215,
+                                            "fields": [{
+                                                    "name": "Current USD price:",
+                                                    "value": `${body.data[0].lastUsdPrice} $`,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    "name": "Current BTC price:",
+                                                    "value": `${body.data[0].lastPrice} BTC`,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    "name": "Current difficulty:",
+                                                    "value": `${body.data[0].difficulty}`,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    "name": "Want moar stats?",
+                                                    "value": "Send us some suggestions on what you'd like to see!"
+                                                }
+                                            ]
+                                        }
+                                    });
+                                }
+                        });
+                    } catch (error) {
+                        console.log("Failed getting date from https://explorer.grlc-bakery.fun/ext/summary\n" + error)
+                    }
                     break;
 
                 case "stats":
@@ -260,7 +264,7 @@ bot.on('message', msg => {
                                                 },
                                                 {
                                                     "name": "Highest Individual Hashrate:",
-                                                    "value": `${config.stats.highestIndividualHashRateString}`,
+                                                    "value": `${config.stats.highestIndividualWorker.hashrateString}`,
                                                     "inline": true
                                                 },
                                                 {
@@ -346,10 +350,11 @@ var SetCurrentRate = function() {
             for (var key in garlicoinPool.workers) {
                 if (garlicoinPool.workers.hasOwnProperty(key)) {
                     var worker = garlicoinPool.workers[key];
-                    if (worker.hashrate > config.stats.highestIndividualHashRate) {
-                        config.stats.highestIndividualHashRate = worker.hashrate;
-                        config.stats.highestIndividualHashRateString = worker.hashrateString;
-                        config.stats.highestIndividualAdress = key;
+                    var hashRate = parseFloat(worker.hashrateString.slice(0, -3));
+                    if (hashRate > config.stats.highestIndividualHashRate) {
+                        config.stats.highestIndividualHashRate = hashRate;
+                        worker.adress = key;
+                        config.stats.highestIndividualWorker = worker;
                         needsSave = true;
                     }
                 }
@@ -359,25 +364,25 @@ var SetCurrentRate = function() {
             var blockCount = blockData.pending + blockData.confirmed;
             if (blockCount > config.block.total) {
                 try {
+                    console.log("Found a block " + Date.now());
                     const channel = bot.channels.find('name', config.options.shoutChannel);
                     if (!channel) return;
-                    channel.send(`@here Wipe your salty tears! Garlic has been served. Total: ${blockCount}`);
+                    //channel.send(`@here Wipe your salty tears! Garlic has been served. Total: ${blockCount}`);
 
                     if (Date.now() - config.block.last < config.stats.fastestBlocktime) {
                         config.stats.fastestBlocktime = Date.now() - config.block.last;
-                        var time = Date.now() - new Date(config.block.last);
-
+                        var time = new Date(Date.now() - config.block.last);
                         config.stats.fastestBlocktimeString = "";
                         var hours = time.getHours();
                         if (hours > 0)
-                            config.stats.fastestBlocktimeString += `${hours} hours`;
+                            config.stats.fastestBlocktimeString += `${hours} hours `;
 
                         var mins = time.getMinutes();
                         if (mins > 0)
-                            config.stats.fastestBlocktimeString += `${mins} minutes`;
+                            config.stats.fastestBlocktimeString += `${mins} minutes `;
 
                         if (config.stats.fastestBlocktimeString != "")
-                            config.stats.fastestBlocktimeString += " and ";
+                            config.stats.fastestBlocktimeString += "and ";
 
                         var secs = time.getSeconds();
                         if (secs > 0)
@@ -390,7 +395,7 @@ var SetCurrentRate = function() {
                     config.block.last = Date.now();
                     needsSave = true;
                 } catch (error) {
-                    console.log("Did you set the shoutChannel in the config file, and is the channel existant")
+                    console.log("Did you set the shoutChannel in the config file, and is the channel existant\n" + error)
                 }
             }
 
