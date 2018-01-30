@@ -351,6 +351,10 @@ bot.on('message', msg => {
                                                         {
                                                             "name": "Want moar stats?",
                                                             "value": "Send us some suggestions on what you'd like to see!"
+                                                        },
+                                                        {
+                                                            "name": "Analitic report of the current stats",
+                                                            "value": "**HODL** recommended"
                                                         }
                                                     ]
                                                 }
