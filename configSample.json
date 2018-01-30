@@ -3,7 +3,11 @@
     "options": {
         "poolName": "Pool Name",
         "poolAPIStats": "http://domain.com/api/stats",
-        "poolTipAdress": "pool donation GRLC adress"
+        "poolTipAdress": "pool donation GRLC adress",
+        "shouldGreetUser": true,
+        "introductionChannel": "introduction",
+        "shouldAddGPUCPURoles": true,
+        "shoutChannel": "shout"
     },
     "block": {
         "total": 0,
