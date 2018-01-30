@@ -145,7 +145,7 @@ bot.on('message', msg => {
                         else {
                             msg.channel.send({
                                 "embed": {
-                                    "description": "Zero bamboozle garlic salt stats!",
+                                    "description": `Zero bamboozle ${config.options.poolName} stats!`,
                                     "color": 16777215,
                                     "fields": [{
                                             "name": "Highest Pool Hashrate:",
@@ -163,7 +163,7 @@ bot.on('message', msg => {
                                             "inline": true
                                         },
                                         {
-                                            "name": "Fastest Block Sovle:",
+                                            "name": "Fastest Block Solve:",
                                             "value": `${config.stats.fastestBlocktimeString}`,
                                             "inline": true
                                         },
