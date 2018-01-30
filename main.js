@@ -81,7 +81,7 @@ bot.on('message', msg => {
 
                             var timePercentage = (Date.now() - config.block.last) / (24 * 60 * 60 * 1000);
                             var currentChance = timePercentage * dayChance;
-                            msg.reply(`With the current hashrate (${lastKnownPoolHashRateString}/s) compared to the global network hashrate (${Math.round(NetworkHashRate / 1000 / 1000 / 1000 * 100) / 100}GH/s) this pool has an ${Math.round(currentChance * 100) / 100}% chance to solve the current block first.\nTo learn more about the math behind this calculation use !help etaNextBlock`);
+                            msg.reply(`With the current hashrate (${lastKnownPoolHashRateString}/s) compared to the global network hashrate (${Math.round(NetworkHashRate / 1000 / 1000 / 1000 * 100) / 100}GH/s) this pool has advanced ${Math.round(currentChance * 100) / 100}% towards a potential next block solve.\n This pool has makes up for ${(PoolHashRate / NetworkHashRate * 100)}‱ in the network.\nTo learn more about the math behind this calculation use !help etaNextBlock`);
                         }
                     });
                     break;
