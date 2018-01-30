@@ -156,6 +156,11 @@ bot.on('message', msg => {
                                     "inline": true
                                 },
                                 {
+                                    "name": "Fastest Block Sovle:",
+                                    "value": `${config.stats.fastestBlocktimeString}`,
+                                    "inline": true
+                                },
+                                {
                                     "name": "Want moar stats?",
                                     "value": "Send us some suggestions on what you'd like to see!"
                                 }
@@ -212,6 +217,29 @@ var SetCurrentRate = function() {
                 const channel = bot.channels.find('name', 'shout');
                 if (!channel) return;
                 channel.send(`@here Wipe your salty tears! Garlic has been served. Total: ${blockCount}`);
+
+                if (Date.now() - config.block.last < config.stats.fastestBlocktime) {
+                    config.stats.fastestBlocktime = Date.now() - config.block.last;
+                    var time = Date.now() - new Date(config.block.last);
+
+                    config.stats.fastestBlocktimeString = "";
+                    var hours = time.getHours();
+                    if (hours > 0)
+                        config.stats.fastestBlocktimeString += `${hours} hours`;
+
+                    var mins = time.getMinutes();
+                    if (mins > 0)
+                        config.stats.fastestBlocktimeString += `${mins} minutes`;
+
+                    if (config.stats.fastestBlocktimeString != "")
+                        config.stats.fastestBlocktimeString += " and ";
+
+                    var secs = time.getSeconds();
+                    if (secs > 0)
+                        config.stats.fastestBlocktimeString += `${secs} seconds`;
+
+                    needsSave = true;
+                }
 
                 config.block.total = blockCount;
                 config.block.last = Date.now();
