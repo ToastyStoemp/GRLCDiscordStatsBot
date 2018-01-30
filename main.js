@@ -173,35 +173,51 @@ bot.on('message', msg => {
                     break;
                 case "poolstats":
                     try {
-                        msg.channel.send({
-                            "embed": {
-                                "description": `Zero bamboozle ${config.options.poolName} stats!`,
-                                "color": 16777215,
-                                "fields": [{
-                                        "name": "Highest Pool Hashrate:",
-                                        "value": `${config.stats.highestHashRateString}`,
-                                        "inline": true
-                                    },
-                                    {
-                                        "name": "Highest Pool Workers:",
-                                        "value": `${config.stats.highestWorkercount}`,
-                                        "inline": true
-                                    },
-                                    {
-                                        "name": "Highest Individual Hashrate:",
-                                        "value": `${config.stats.highestIndividualWorker.hashrateString}`,
-                                        "inline": true
-                                    },
-                                    {
-                                        "name": "Fastest Block Solve:",
-                                        "value": `${config.stats.fastestBlocktimeString}`,
-                                        "inline": true
-                                    },
-                                    {
-                                        "name": "Want moar stats?",
-                                        "value": "Send us some suggestions on what you'd like to see!"
+                        request({ url: config.options.poolAPIStats, json: true }, function(error, response, body) {
+                            if (error) console.log(error);
+                            else {
+                                var garlicoinPool = body.pools.garlicoin;
+                                msg.channel.send({
+                                    "embed": {
+                                        "description": `Zero bamboozle ${config.options.poolName} stats!`,
+                                        "color": 16777215,
+                                        "fields": [{
+                                                "name": "Current Hashrate:",
+                                                "value": `${garlicoinPool.hashrateString}`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Current Worker Count",
+                                                "value": `${garlicoinPool.workerCount}`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Highest Pool Hashrate:",
+                                                "value": `${config.stats.highestHashRateString}`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Highest Pool Workers:",
+                                                "value": `${config.stats.highestWorkercount}`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Highest Individual Hashrate:",
+                                                "value": `${config.stats.highestIndividualWorker.hashrateString}`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Fastest Block Solve:",
+                                                "value": `${config.stats.fastestBlocktimeString}`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Want moar stats?",
+                                                "value": "Send us some suggestions on what you'd like to see!"
+                                            }
+                                        ]
                                     }
-                                ]
+                                });
                             }
                         });
                     } catch (error) {
@@ -210,50 +226,50 @@ bot.on('message', msg => {
                     break;
                 case "grlcstats":
                     try {
+                        console.log('here')
                         request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
-                            if (error)
-                                if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
-                                else {
-                                    var targetTime = lastKnownData[Math.floor(Date.now() / 1000 / 60) - 60];
-                                    if (targetTime == undefined)
-                                        targetTime = lastKnownData[Object.keys(lastKnownData)[0]];
-                                    msg.channel.send({
-                                        "embed": {
-                                            "description": `Zero bamboozle ${config.options.poolName} stats!`,
-                                            "color": 16777215,
-                                            "fields": [{
-                                                    "name": "Current USD price:",
-                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(targetTime.UsdPrice, body.data[0].lastUsdPrice)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Current BTC price:",
-                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(targetTime.lastPrice, body.data[0].lastPrice)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Current difficulty:",
-                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(targetTime.difficulty, body.data[0].difficulty)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Block Count:",
-                                                    "value": `${body.data[0].blockcount} (${StringDifference(targetTime.blockCount,body.data[0].blockcount)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Network Rate:",
-                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(targetTime.networkRate,body.data[0].hashrate)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Want moar stats?",
-                                                    "value": "Send us some suggestions on what you'd like to see!"
-                                                }
-                                            ]
-                                        }
-                                    });
-                                }
+                            if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
+                            else {
+                                var targetTime = lastKnownData[Math.floor(Date.now() / 1000 / 60) - 60];
+                                if (targetTime == undefined)
+                                    targetTime = lastKnownData[Object.keys(lastKnownData)[0]];
+                                msg.channel.send({
+                                    "embed": {
+                                        "description": `Zero bamboozle ${config.options.poolName} stats!`,
+                                        "color": 16777215,
+                                        "fields": [{
+                                                "name": "Current USD price:",
+                                                "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(targetTime.UsdPrice, body.data[0].lastUsdPrice)})`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Current BTC price:",
+                                                "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(targetTime.lastPrice, body.data[0].lastPrice)})`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Current difficulty:",
+                                                "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(targetTime.difficulty, body.data[0].difficulty)})`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Block Count:",
+                                                "value": `${body.data[0].blockcount} (${StringDifference(targetTime.blockCount,body.data[0].blockcount)})`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Network Rate:",
+                                                "value": `${body.data[0].hashrate}GH/s (${StringDifference(targetTime.networkRate,body.data[0].hashrate)})`,
+                                                "inline": true
+                                            },
+                                            {
+                                                "name": "Want moar stats?",
+                                                "value": "Send us some suggestions on what you'd like to see!"
+                                            }
+                                        ]
+                                    }
+                                });
+                            }
                         });
                     } catch (error) {
                         console.log("Failed getting date from https://explorer.grlc-bakery.fun/ext/summary\n" + error)
@@ -265,68 +281,85 @@ bot.on('message', msg => {
                         request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
                             if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
                             else {
-                                try {
-                                    var targetTime = lastKnownData[Math.floor(Date.now() / 1000 / 60) - 60];
-                                    if (targetTime == undefined)
-                                        targetTime = lastKnownData[Object.keys(lastKnownData)[0]];
-                                    msg.channel.send({
-                                        "embed": {
-                                            "description": `Zero bamboozle ${config.options.poolName} stats!`,
-                                            "color": 16777215,
-                                            "fields": [{
-                                                    "name": "Highest Pool Hashrate:",
-                                                    "value": `${config.stats.highestHashRateString}`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Highest Pool Workers:",
-                                                    "value": `${config.stats.highestWorkercount}`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Highest Individual Hashrate:",
-                                                    "value": `${config.stats.highestIndividualWorker.hashrateString}`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Fastest Block Solve:",
-                                                    "value": `${config.stats.fastestBlocktimeString}`,
-                                                    "inline": true
-                                                }, {
-                                                    "name": "Current USD price:",
-                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(targetTime.UsdPrice, body.data[0].lastUsdPrice)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Current BTC price:",
-                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(targetTime.lastPrice, body.data[0].lastPrice)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Current difficulty:",
-                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(targetTime.difficulty, body.data[0].difficulty)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Block Count:",
-                                                    "value": `${body.data[0].blockcount} (${StringDifference(targetTime.blockCount,body.data[0].blockcount)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Network Rate:",
-                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(targetTime.networkRate,body.data[0].hashrate)})`,
-                                                    "inline": true
-                                                },
-                                                {
-                                                    "name": "Want moar stats?",
-                                                    "value": "Send us some suggestions on what you'd like to see!"
+                                request({ url: config.options.poolAPIStats, json: true }, function(error, response, bodyTwo) {
+                                    if (error) console.log(error);
+                                    else {
+                                        var garlicoinPool = bodyTwo.pools.garlicoin;
+                                        try {
+                                            var targetTime = lastKnownData[Math.floor(Date.now() / 1000 / 60) - 60];
+                                            if (targetTime == undefined)
+                                                targetTime = lastKnownData[Object.keys(lastKnownData)[0]];
+                                            msg.channel.send({
+                                                "embed": {
+                                                    "description": `Zero bamboozle ${config.options.poolName} stats!`,
+                                                    "color": 16777215,
+                                                    "fields": [{
+                                                            "name": "Current Hashrate:",
+                                                            "value": `${garlicoinPool.hashrateString}`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Current Worker Count",
+                                                            "value": `${garlicoinPool.workerCount}`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Highest Pool Hashrate:",
+                                                            "value": `${config.stats.highestHashRateString}`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Highest Pool Workers:",
+                                                            "value": `${config.stats.highestWorkercount}`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Highest Individual Hashrate:",
+                                                            "value": `${config.stats.highestIndividualWorker.hashrateString}`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Fastest Block Solve:",
+                                                            "value": `${config.stats.fastestBlocktimeString}`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Current USD price:",
+                                                            "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(targetTime.UsdPrice, body.data[0].lastUsdPrice)})`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Current BTC price:",
+                                                            "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(targetTime.lastPrice, body.data[0].lastPrice)})`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Current difficulty:",
+                                                            "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(targetTime.difficulty, body.data[0].difficulty)})`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Block Count:",
+                                                            "value": `${body.data[0].blockcount} (${StringDifference(targetTime.blockCount,body.data[0].blockcount)})`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Network Rate:",
+                                                            "value": `${body.data[0].hashrate}GH/s (${StringDifference(targetTime.networkRate,body.data[0].hashrate)})`,
+                                                            "inline": true
+                                                        },
+                                                        {
+                                                            "name": "Want moar stats?",
+                                                            "value": "Send us some suggestions on what you'd like to see!"
+                                                        }
+                                                    ]
                                                 }
-                                            ]
+                                            });
+                                        } catch (error) {
+                                            console.log("Failed to send message for: " + cmd + "\n" + error);
                                         }
-                                    });
-                                } catch (error) {
-                                    console.log("Failed to send message for: " + cmd + "\n" + error);
-                                }
+                                    }
+                                });
                             }
                         });
                     } catch (error) {
