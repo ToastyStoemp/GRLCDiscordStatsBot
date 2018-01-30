@@ -1,7 +1,7 @@
 {
     "BotToken": "",
     "options": {
-        "poolName": "The Salt Mine",
+        "poolName": "Pool Name",
         "poolAPIStats": "http://domain.com/api/stats",
         "poolTipAdress": "pool donation GRLC adress"
     },
