@@ -8,10 +8,15 @@ const bot = new Discord.Client();
 var lastKnownPoolHashRate;
 var lastKnownPoolHashRateString;
 
+var lastKnownData = {};
+
 bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
     setInterval(SetCurrentRate, 60 * 1000);
     SetCurrentRate();
+
+    setInterval(UpdateData, 60 * 60 * 1000);
+    UpdateData();
 });
 
 bot.on('message', msg => {
@@ -215,17 +220,27 @@ bot.on('message', msg => {
                                             "color": 16777215,
                                             "fields": [{
                                                     "name": "Current USD price:",
-                                                    "value": `${body.data[0].lastUsdPrice} $`,
+                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(lastKnownData.UsdPrice, body.data[0].lastUsdPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current BTC price:",
-                                                    "value": `${body.data[0].lastPrice} BTC`,
+                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(lastKnownData.lastPrice, body.data[0].lastPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current difficulty:",
-                                                    "value": `${body.data[0].difficulty}`,
+                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(lastKnownData.difficulty, body.data[0].difficulty)})`,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    "name": "Block Count:",
+                                                    "value": `${body.data[0].blockcount} (${StringDifference(lastKnownData.blockCount,body.data[0].blockcount)})`,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    "name": "Network Rate:",
+                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(lastKnownData.networkRate,body.data[0].hashrate)})`,
                                                     "inline": true
                                                 },
                                                 {
@@ -273,17 +288,27 @@ bot.on('message', msg => {
                                                     "inline": true
                                                 }, {
                                                     "name": "Current USD price:",
-                                                    "value": `${body.data[0].lastUsdPrice} $`,
+                                                    "value": `${body.data[0].lastUsdPrice} $ (${StringDifference(lastKnownData.UsdPrice, body.data[0].lastUsdPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current BTC price:",
-                                                    "value": `${body.data[0].lastPrice} BTC`,
+                                                    "value": `${Math.round(body.data[0].lastPrice * 100) / 100 * 1000} mBTC (${StringDifference(lastKnownData.lastPrice, body.data[0].lastPrice)})`,
                                                     "inline": true
                                                 },
                                                 {
                                                     "name": "Current difficulty:",
-                                                    "value": `${body.data[0].difficulty}`,
+                                                    "value": `${Math.round(body.data[0].difficulty * 100) / 100} (${StringDifference(lastKnownData.difficulty, body.data[0].difficulty)})`,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    "name": "Block Count:",
+                                                    "value": `${body.data[0].blockcount} (${StringDifference(lastKnownData.blockCount,body.data[0].blockcount)})`,
+                                                    "inline": true
+                                                },
+                                                {
+                                                    "name": "Network Rate:",
+                                                    "value": `${body.data[0].hashrate}GH/s (${StringDifference(lastKnownData.networkRate,body.data[0].hashrate)})`,
                                                     "inline": true
                                                 },
                                                 {
@@ -411,4 +436,27 @@ var SetCurrentRate = function() {
             }
         }
     });
+}
+var UpdateData = function() {
+    request({ url: "https://explorer.grlc-bakery.fun/ext/summary", json: true }, function(error, response, body) {
+        if (error) console.log("Error occured while poking: https://explorer.grlc-bakery.fun/ext/summary\n" + error);
+        else {
+            lastKnownData.UsdPrice = body.data[0].lastUsdPrice;
+            lastKnownData.lastPrice = body.data[0].lastPrice;
+            lastKnownData.difficulty = body.data[0].difficulty;
+            lastKnownData.blockCount = body.data[0].blockcount;
+            lastKnownData.networkRate = body.data[0].hashrate;
+        }
+    });
+}
+
+var StringDifference = function(a, b) {
+    var c = b - a;
+    c = Math.round(c * 100) / 100;
+    if (c > 0)
+        return "+" + c;
+    if (c < 0)
+        return c;
+    if (c == 0)
+        return "--";
 }
