@@ -1,28 +1,30 @@
 {
-    "BotToken": "",
+    "BotToken": "Bot Token Here",
     "options": {
-        "poolName": "Pool Name",
-        "poolAPIStats": "http://domain.com/api/stats",
-        "poolTipAdress": "pool donation GRLC adress",
+        "poolName": "Pool Name Here",
+        "poolAPIStats": "Pool Dommain Here /api/stats",
+        "poolTipAddress": "Pool Donation Address Here",
+        "poolAddress": "Stratum Address Here",
+        "poolFee": "Pool Fee Here%",
         "shouldGreetUser": true,
-        "introductionChannel": "introduction",
+        "introductionChannel": "Introduction Channel Here",
         "shouldAddGPUCPURoles": true,
-        "shoutChannel": "shout"
+        "shoutChannel": "Shout Channel Here",
+        "GPURole": "GPU Role Here",
+        "CPURole": "CPU Role Here"
     },
     "block": {
         "total": 0,
         "last": 0
     },
     "stats": {
-        "fastestBlocktime": 1111111111111,
-        "fastestBlocktimeString": "Not yet available",
-
+        "fastestBlocktime": 111111111111111111111,
+        "fastestBlocktimeString": "Not available yet",
         "highestHashRate": 0,
-        "highestHashRateString": "",
-
+        "highestHashRateString": "0",
         "highestWorkercount": 0,
-
         "highestIndividualHashRate": 0,
         "highestIndividualWorker": {}
-    }
+    },
+    "history": []
 }
