@@ -121,7 +121,7 @@ bot.on('message', msg => {
                                 var timePercentage = (Date.now() - config.block.last) / (24 * 60 * 60 * 1000);
                                 var currentChance = timePercentage * dayChance;
                                 try {
-                                    msg.reply(`with the current hashrate (${lastKnownPoolHashRateString}/s) compared to the global network hashrate of (${Math.round(NetworkHashRate / 1000 / 1000 / 1000 * 100) / 100}GH/s) this pool has advanced ${Math.round(currentChance * 100) / 100}% towards a potential next block solve.\nThis pool has en estimate income of ${estimatedPoolGain}\nThis pool has makes up for ${(PoolHashRate / NetworkHashRate * 100)}‱ in the network.\nTo learn more about the math behind this calculation use !help etaNextBlock`);
+                                    msg.reply(`With the current hashrate (${lastKnownPoolHashRateString}/s) compared to the global network hashrate of (${Math.round(NetworkHashRate / 1000 / 1000 / 1000 * 100) / 100}GH/s) this pool has advanced ${Math.round(currentChance * 100) / 100}% towards a potential next block solve.\nThis pool has an estimate income of ${estimatedPoolGain}\nThis pool has makes up for ${(PoolHashRate / NetworkHashRate * 100)}‱ in the network.\nTo learn more about the math behind this calculation use !help etaNextBlock`);
                                 } catch (error) {
                                     console.log("Failed to reply to message for: " + cmd + "\n" + error);
                                 }
@@ -182,6 +182,11 @@ bot.on('message', msg => {
                                         "description": `Zero bamboozle ${config.options.poolName} stats!`,
                                         "color": 16777215,
                                         "fields": [{
+                                                "name": "Blocks Mined:",
+                                                "value": `${config.block.total}`,
+                                                "inline": true
+                                            },
+                                            {
                                                 "name": "Current Hashrate:",
                                                 "value": `${garlicoinPool.hashrateString}`,
                                                 "inline": true
@@ -294,6 +299,11 @@ bot.on('message', msg => {
                                                     "description": `Zero bamboozle ${config.options.poolName} stats!`,
                                                     "color": 16777215,
                                                     "fields": [{
+                                                            "name": "Blocks Mined:",
+                                                            "value": `${config.block.total}`,
+                                                            "inline": true
+                                                        },
+                                                        {
                                                             "name": "Current Hashrate:",
                                                             "value": `${garlicoinPool.hashrateString}`,
                                                             "inline": true
