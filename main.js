@@ -437,7 +437,7 @@ var SetCurrentRate = function() {
                     console.log("Found a block " + new Date(Date.now()));
                     const channel = bot.channels.find('name', config.options.shoutChannel);
                     if (!channel) return;
-                    //channel.send(`@here Wipe your salty tears! Garlic has been served. Total: ${blockCount}`);
+                    channel.send(`@here Wipe your salty tears! Garlic has been served. Total: ${blockCount}`);
 
                     if (Date.now() - config.block.last < config.stats.fastestBlocktime) {
                         config.stats.fastestBlocktime = Date.now() - config.block.last;
