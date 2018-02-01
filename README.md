@@ -28,4 +28,6 @@ To use the bot typoe `!help`
 
 it comes with a few statstics that can be seen with the `!stats` command.
 
-For example: ![Example Stats](https://i.imgur.com/AMqqtzC.png)
+For example: 
+
+![Example Stats](https://i.imgur.com/AMqqtzC.png)
