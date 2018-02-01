@@ -26,6 +26,8 @@ to start
 # Usage
 To use the bot typoe `!help`
 
+The bot makes an anouncement in the 'shout channel' when a block has entered the 
+
 it comes with a few statstics that can be seen with the `!stats` command.
 
 For example: 
