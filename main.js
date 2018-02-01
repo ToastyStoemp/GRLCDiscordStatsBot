@@ -489,7 +489,7 @@ var SetCurrentRate = function() {
             }
 
             var blockData = garlicoinPool.blocks;
-            var blockCount = blockData.pending + blockData.confirmed;
+            var blockCount = blockData.confirmed;
             if (blockCount > config.block.total) {
                 try {
                     console.log("Found a block " + new Date(Date.now()));
